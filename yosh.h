@@ -9,4 +9,5 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
+char **_split( char *line, char *delims, int maxlen);
 char **parse_args(char *line);
