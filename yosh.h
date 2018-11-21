@@ -9,5 +9,6 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-char **_split( char *line, char *delims, int maxlen);
-char **parse_args(char *line);
+char **_split(char **buf, char *line, char *delims, int maxlen);
+char **parse_args(char **buf, char *line);
+char *prompt_in(char *buf);
