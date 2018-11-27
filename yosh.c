@@ -9,20 +9,23 @@
  *      (do not use directly)
  *  
  *  splits @line along @delims (using strsep)
- *  results are stored in @boff
- *  @bofflen is used only for zeroing out @boff
- *  (i.e. there is no check while strsepping)
- *      BE VERY CAREFUL
+ *  results are stored in @args
+ *  if @bofflen is exceeded, separation stops.
  *
  */
-char **_split(char **boff, char *line, char *delims, int bofflen)
+char **_split(char **args, char *line, char *delims, int bofflen)
 {
     //char **args = calloc(maxlen, sizeof(char *)); 
     int i = bofflen;
-    while(i--) boff[i] = 0;
+    while(i--) args[i] = 0;
     i++;
-    while(boff[i++] = strsep(&line, delims));
-    return boff;
+    while(args[i++] = strsep(&line, delims)) {
+        if(i == bofflen) {
+            args[i] = 0;
+            break;
+        }
+    }
+    return args;
 }
 
 char **parse_args(char **boff, char *line)
@@ -40,18 +43,30 @@ char *prompt_in(char *buf)
     return buf;
 }
 
+void child_content(char **args)
+{
+    if(!strcmp("exit", args[0])) 
+        exit(0);
+    execvp(args[0], args);
+}
+
 int main(int argc, char *argv)
 {
     char line[MAX_LINE];
     char **args = calloc(MAX_ARGS, sizeof(char *));
+    int child, status;
 
     while(1) {
         prompt_in(line);
         parse_args(args, line);
 
-        int i = 0;
-        while(args[i])
-            printf("\"%s\"\n", args[i++]);
+        // int i = 0;
+        // while(args[i])
+        //     printf("\"%s\"\n", args[i++]);
+        if((child = fork()) == 0)
+            execvp(args[0], args);
+        wait(&status);
+        printf("exit status: %i\n", WEXITSTATUS(status));
     }
 
     free(args);
