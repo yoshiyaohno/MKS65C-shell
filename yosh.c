@@ -45,9 +45,9 @@ char *prompt_in(char *buf)
 
 void child_content(char **args)
 {
-    if(!strcmp("exit", args[0])) 
-        exit(0);
+    printf("let's execvp\n");
     execvp(args[0], args);
+    printf("finished execvp\n");
 }
 
 int main(int argc, char *argv)
@@ -60,13 +60,20 @@ int main(int argc, char *argv)
         prompt_in(line);
         parse_args(args, line);
 
-        // int i = 0;
-        // while(args[i])
-        //     printf("\"%s\"\n", args[i++]);
+        int i = 0;
+        printf("\nArgs:\n");
+        while(i < MAX_ARGS)
+            printf("[%s], ", args[i++]);
+        printf("\n");
+        
+        if(!strcmp("exit", args[0])) 
+            exit(0);
+
         if((child = fork()) == 0)
-            execvp(args[0], args);
-        wait(&status);
-        printf("exit status: %i\n", WEXITSTATUS(status));
+            child_content(args);
+
+        waitpid(child, &status, 0);
+        printf("\nexit status: %i\n", WEXITSTATUS(status));
     }
 
     free(args);
