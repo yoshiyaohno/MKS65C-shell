@@ -1,3 +1,9 @@
+# the shell
+yosh
+
+# swapfiles
+*.swp
+
 # Prerequisites
 *.d
 
