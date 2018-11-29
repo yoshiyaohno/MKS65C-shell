@@ -1,6 +1,7 @@
 #include "yosh.h"
 
 #define MAX_ARGS 16
+#define MAX_CMDS 256
 #define MAX_LINE 256
 
 /*
@@ -13,9 +14,9 @@
  *  if @bofflen is exceeded, separation stops.
  *
  */
-char **_split(char **args, char *line, char *delims, int bofflen)
+char **_split(char *line, char *delims, int bofflen)
 {
-    //char **args = calloc(maxlen, sizeof(char *)); 
+    char **args = calloc(bofflen, sizeof(char *));
     int i = bofflen;
     while(i--) args[i] = 0;
     i++;
@@ -28,52 +29,57 @@ char **_split(char **args, char *line, char *delims, int bofflen)
     return args;
 }
 
-char **parse_args(char **boff, char *line)
+char **split_cmds(char *cmds)
 {
-    _split(boff, line, " ", MAX_ARGS);
+    return _split(cmds, ";", MAX_CMDS);
+}
+
+char **parse_args(char *line)
+{
+    return _split(line, " ", MAX_ARGS);
 }
 
 char *prompt_in(char *buf)
 {
-    char line[MAX_LINE];
     printf(">");
-    fgets(line, MAX_LINE, stdin);
-    line[strlen(line)-1] = '\0';
-    strcpy(buf, line);
+    fgets(buf, MAX_LINE, stdin);
+    buf[strlen(buf)-1] = '\0';
     return buf;
 }
 
-void child_content(char **args)
+void run_cmd(char **args)
 {
-    printf("let's execvp\n");
     execvp(args[0], args);
-    printf("finished execvp\n");
+    // only continues if no error
+    perror(args[0]);
+    exit(1);
 }
 
 int main(int argc, char *argv)
 {
     char line[MAX_LINE];
-    char **args = calloc(MAX_ARGS, sizeof(char *));
+    char **args;
     int child, status;
 
     while(1) {
         prompt_in(line);
-        parse_args(args, line);
+        args = parse_args(line);
 
-        int i = 0;
-        printf("\nArgs:\n");
-        while(i < MAX_ARGS)
-            printf("[%s], ", args[i++]);
-        printf("\n");
+        // int i = 0;
+        // printf("\nArgs:\n");
+        // while(i < MAX_ARGS)
+        //     printf("[%s], ", args[i++]);
+        // printf("\n");
         
         if(!strcmp("exit", args[0])) 
             exit(0);
 
         if((child = fork()) == 0)
-            child_content(args);
+            run_cmd(args);
 
         waitpid(child, &status, 0);
         printf("\nexit status: %i\n", WEXITSTATUS(status));
+        free(args);
     }
 
     free(args);
