@@ -59,13 +59,11 @@ void trim_spaces(char **args)
 {
     trim_lead_spaces(args); // lol
     char **i = args;
-    while(*i) {
+    while(*i)
         if(strcmp(*i, ""))
             i++;
         else // i is on an empty string
             trim_lead_spaces(i);
-        // this is iffy as fuck
-    }
 }
 
 char *prompt_in(char *buf)

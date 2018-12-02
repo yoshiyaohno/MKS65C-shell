@@ -21,17 +21,16 @@
  */
 char **_split(char *line, char *delims);
 
-// split on spaces
+// _split(), on spaces
 char **parse_args(char *line);
 
-// split on semicolons
+// _split(), on semicolons
 char **split_cmds(char *cmds);
 
 // remove leading empty strings from an argument array
 void trim_lead_spaces(char **args);
 
-// remove leading and duplicate inner spaces (empty strings)
-//  from argument array
+// remove empty strings from an argument array
 void trim_spaces(char **args);
 
 // print prompt and read input into buf
