@@ -6,37 +6,52 @@
 
 /*
  *  _split() 
- *      generalized string splitting function
- *      (do not use directly)
- *  
- *  splits @line along @delims (using strsep)
- *  results are stored in @args
- *  if @bofflen is exceeded, separation stops.
+ *  splits @line along @delims
+ *  returns a pointer to a string array with the results
+ *  (remember to free!)
+ *  supports an arbitrary number of splitees
  *
  */
-char **_split(char *line, char *delims, int bofflen)
+char **_split(char *line, char *delims)
 {
-    char **args = calloc(bofflen, sizeof(char *));
-    int i = bofflen;
-    while(i--) args[i] = 0;
-    i++;
-    while(args[i++] = strsep(&line, delims)) {
-        if(i == bofflen) {
-            args[i] = 0;
-            break;
-        }
-    }
+    int i = 0;
+    // first pass to find necessary length
+    char oof[strlen(line)]; // make a backup, which is annoying
+    strcpy(oof, line);
+    char *line2 = oof; // oh god oh fuck
+    // printf("[split] pre-split0, line2 is %s\n", line2);
+    while(strsep(&line2, delims)) ++i; //actualy find the length
+    // printf("[split] i is %i\n", i);
+    char **args = malloc((i+1) * sizeof(char *));
+    args[i] = NULL;
+    // printf("[split] pre-split1, line is %s\n", line);
+    // now actually fill the array
+    i = 0;
+    while(args[i++] = strsep(&line, delims));
+    // printf("[split] separated <%s>\n\tline is %s\n", args[i-1], line);
     return args;
 }
 
 char **split_cmds(char *cmds)
 {
-    return _split(cmds, ";", MAX_CMDS);
+    // printf("[split_cmds] ");
+    return _split(cmds, ";");
 }
 
 char **parse_args(char *line)
 {
-    return _split(line, " ", MAX_ARGS);
+    // printf("[parse_args] ");
+    return _split(line, " ");
+}
+
+void trim_lead_spaces(char **args)
+{
+    int i = 0;
+    int j = 0;
+    while(!strcmp(args[i], "")) i++;
+    // i is now the index of the first non-null string
+    // now copy over till we hit the end null
+    while(args[j++] = args[i++]);
 }
 
 char *prompt_in(char *buf)
@@ -58,12 +73,34 @@ void run_cmd(char **args)
 int main(int argc, char *argv)
 {
     char line[MAX_LINE];
-    char **args;
+    char **args, **cmds, **jef;
     int child, status;
+    int i = 0;
 
     while(1) {
         prompt_in(line);
-        args = parse_args(line);
+        cmds = split_cmds(line);
+        i = 0;
+        while(cmds[i]) {
+            //printf("[[CMD %i]]: %s\n", i, cmds[i]);
+            if(!strcmp(cmds[i], "")) break;
+            args = parse_args(cmds[i]);
+            trim_lead_spaces(args);
+            
+            // printf("args:\n");
+            // char **oof = args;
+            // while(*oof)
+            //     printf("[%s]\n", *oof++);
+            // printf("done args\n\n");
+
+            if(!strcmp("exit", args[0])) 
+                exit(0);
+            if((child = fork()) == 0)
+                run_cmd(args);
+            waitpid(child, &status, 0);
+            free(args);
+            i++;
+        }
 
         // int i = 0;
         // printf("\nArgs:\n");
@@ -71,15 +108,8 @@ int main(int argc, char *argv)
         //     printf("[%s], ", args[i++]);
         // printf("\n");
         
-        if(!strcmp("exit", args[0])) 
-            exit(0);
-
-        if((child = fork()) == 0)
-            run_cmd(args);
-
-        waitpid(child, &status, 0);
         printf("\nexit status: %i\n", WEXITSTATUS(status));
-        free(args);
+        free(cmds);
     }
 
     free(args);
