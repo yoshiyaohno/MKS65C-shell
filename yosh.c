@@ -46,12 +46,26 @@ char **parse_args(char *line)
 
 void trim_lead_spaces(char **args)
 {
+    if(!args) return; // null case
     int i = 0;
     int j = 0;
-    while(!strcmp(args[i], "")) i++;
-    // i is now the index of the first non-null string
+    while(args[i] && !strcmp(args[i], "")) i++;
+    // i is now the index of the first non-empty string (or null)
     // now copy over till we hit the end null
     while(args[j++] = args[i++]);
+}
+
+void trim_spaces(char **args)
+{
+    trim_lead_spaces(args); // lol
+    char **i = args;
+    while(*i) {
+        if(strcmp(*i, ""))
+            i++;
+        else // i is on an empty string
+            trim_lead_spaces(i);
+        // this is iffy as fuck
+    }
 }
 
 char *prompt_in(char *buf)
@@ -80,12 +94,12 @@ int main(int argc, char *argv)
     while(1) {
         prompt_in(line);
         cmds = split_cmds(line);
-        i = 0;
-        while(cmds[i]) {
+        i = -1;
+        while(cmds[++i]) {
             //printf("[[CMD %i]]: %s\n", i, cmds[i]);
-            if(!strcmp(cmds[i], "")) break;
             args = parse_args(cmds[i]);
-            trim_lead_spaces(args);
+            //trim_lead_spaces(args);
+            trim_spaces(args);
             
             // printf("args:\n");
             // char **oof = args;
@@ -93,21 +107,16 @@ int main(int argc, char *argv)
             //     printf("[%s]\n", *oof++);
             // printf("done args\n\n");
 
+            if(!args[0]) continue;
+
             if(!strcmp("exit", args[0])) 
                 exit(0);
             if((child = fork()) == 0)
                 run_cmd(args);
             waitpid(child, &status, 0);
             free(args);
-            i++;
         }
 
-        // int i = 0;
-        // printf("\nArgs:\n");
-        // while(i < MAX_ARGS)
-        //     printf("[%s], ", args[i++]);
-        // printf("\n");
-        
         printf("\nexit status: %i\n", WEXITSTATUS(status));
         free(cmds);
     }

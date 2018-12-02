@@ -27,8 +27,12 @@ char **parse_args(char *line);
 // split on semicolons
 char **split_cmds(char *cmds);
 
-// remove leading spaces (empty strings) from argument array
-void trim_lead_nulls(char **args);
+// remove leading empty strings from an argument array
+void trim_lead_spaces(char **args);
+
+// remove leading and duplicate inner spaces (empty strings)
+//  from argument array
+void trim_spaces(char **args);
 
 // print prompt and read input into buf
 char *prompt_in(char *buf);
