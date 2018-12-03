@@ -35,6 +35,11 @@ char **split_cmds(char *cmds)
     return _split(cmds, ";");
 }
 
+char **split_pipes(char *cmds)
+{
+    return _split(cmds, "|");
+}
+
 // counts the tokens in a string (= single command)
 int count_tokens(char *line)
 {

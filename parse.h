@@ -42,6 +42,9 @@ int count_args(char *line);
 // _split(), on semicolons
 char **split_cmds(char *cmds);
 
+// _split(), on |
+char **split_pipes(char *);
+
 // remove leading empty strings from an argument array
 void trim_lead_spaces(char **args);
 
