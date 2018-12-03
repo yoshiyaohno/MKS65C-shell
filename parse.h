@@ -29,8 +29,15 @@
  */
 char **_split(char *line, char *delims);
 
-// split a single command into its arguments (removes spaces)
+/*
+ *  split a single command into its arguments (removes spaces)
+ *  works like _split(), i.e. remember to free the pointer you get.
+ *
+ */
 char **parse_args(char *line);
+
+// count the number of tokens in a command (helper function)
+int count_args(char *line);
 
 // _split(), on semicolons
 char **split_cmds(char *cmds);
