@@ -22,12 +22,9 @@ int main(int argc, char *argv)
         cmds = split_cmds(line);
         i = -1;
         while(cmds[++i]) {
+
             args = parse_args(cmds[i]);
-            // printf("args:\n");
-            // char **oof = args;
-            // while(*oof)
-            //     printf("<%s>\n", *oof++);
-            // printf("done args\n\n");
+
             if(!args[0]) continue;
 
             status = ooof(args);

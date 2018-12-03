@@ -103,6 +103,7 @@ int run_cmd(char **args)
         perror(args[0]);
         exit(1);
     }
+    //printf("[run_cmd] command is run\n");
     waitpid(child, &status, 0);
     return status;
 }

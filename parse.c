@@ -41,8 +41,9 @@ char **split_pipes(char *cmds)
 }
 
 // counts the tokens in a string (= single command)
-int count_tokens(char *line)
+int count_tokens(char *str)
 {
+    char *line = str;
     int count = 0;
     while(*line) {
         // oh boy
@@ -55,7 +56,8 @@ int count_tokens(char *line)
                 if(*(line+1) == '>') {
                     ++line;
                     ++count;
-                    if(*(line+1) == '>') ++line;
+                    if(*(line+1) == '>')
+                        ++line;
                 }
                 break;
             case '2' :
@@ -71,7 +73,9 @@ int count_tokens(char *line)
             case ' ' :
                 break;
             default :
-                if(*(line+1) == ' ' || *(line+1) == '\0')
+                if(line == str || *(line-1) == ' '
+                        || *(line-1) == '>'
+                        || *(line-1) == '<')
                     ++count;
         } // end switch
         ++line;
@@ -89,7 +93,7 @@ char **parse_args(char *line)
     // printf("[parse_args] ");
     // char **args = _split(line, " ");
     // trim_spaces(args);
-    char *token = line;
+    char *bline = line;
     int i = count_tokens(line);
     // printf("[parse_args] number of tokens: %i\n", i);
     char **args = malloc((i+1)*sizeof(char *));
@@ -107,6 +111,7 @@ char **parse_args(char *line)
                 }
                 else
                     args[i++] = ">";
+                oof = line+1;
                 break;
             case '&' :
                 if(*(line+1) == '>') {
@@ -118,6 +123,7 @@ char **parse_args(char *line)
                     }
                     else
                         args[i++] = "&>";
+                    oof = line+1;
                 }
                 break;
             case '2' :
@@ -130,11 +136,13 @@ char **parse_args(char *line)
                     }
                     else
                         args[i++] = "2>";
+                    oof = line+1;
                 }
                 break;
             case '<' :
                 *line = '\0';
                 args[i++] = "<";
+                oof = line+1;
                 break;
             case ' ' :
                 *line = '\0';
@@ -142,7 +150,11 @@ char **parse_args(char *line)
                 break;
             default :
                 // end of word?
-                if(*(line+1) == ' ' || *(line+1) == '\0')
+                if(line == bline || *(line-1) == ' '
+                        || *(line-1) == '\0'
+                        || *(line-1) == '>'
+                        || *(line-1) == '<'
+                        )
                     args[i++] = oof;
         } // end switch
         ++line;
