@@ -13,10 +13,22 @@ char *prompt_in(char *buf)
     }
     else
         cwd_out = cwd;
-    printf("[%s]\n  > ", cwd_out);
+
+    char *t = clock_time();
+
+    printf(" %s \n[%s]$ ", cwd_out, t);
     fgets(buf, MAX_LINE, stdin);
     buf[strlen(buf)-1] = '\0';
     return buf;
+}
+
+char *clock_time()
+{
+    // A+++ naming scheme
+    time_t   t = time(NULL);
+    char   *tt = ctime(&t);
+    char **ttt = _split(tt, " ");
+    return ttt[3];
 }
 
 int main(int argc, char *argv)
@@ -31,15 +43,16 @@ int main(int argc, char *argv)
         printf("\n[E%03i]", WEXITSTATUS(status));
         prompt_in(line);
         cmds = split_cmds(line);
-        i = -1;
+        i = -1; // classic technique
         while(cmds[++i]) {
-                // yeah
+                
             args = parse_args(cmds[i]);
-                        // i
+              
             if(!args[0]) continue;
-                    // do
-            status = ooof(args);
-                // spacing
+             
+            //status = ooof(args); // o h   y e a h 
+            status = run_cmd(args);
+            
             free(args);
         }
 

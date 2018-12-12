@@ -1,3 +1,4 @@
+#include <time.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -14,3 +15,6 @@
 
 // print prompt and read input into buf
 char *prompt_in(char *buf);
+
+// return a string of the time today
+char *clock_time(void);
