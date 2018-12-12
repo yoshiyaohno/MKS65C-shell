@@ -7,6 +7,10 @@
 // deals with all redirection, and runs the command in @args
 int ooof(char **args);
 
+void proc_redirects(char **args);
+
+void child_cmd(char **args);
+
 // run a command (without redirection), and return its status
 int run_cmd(char **args);
 
