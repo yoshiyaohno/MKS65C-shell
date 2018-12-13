@@ -2,6 +2,8 @@
 /* jesus christ is this function ugly */
 /* * * * * * * * ** * * * * * * * * * */
 
+/* EDIT: we did it */
+
 #include "parse.h"
 
 // deals with all redirection, and runs the command in @args

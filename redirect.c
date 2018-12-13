@@ -1,4 +1,4 @@
-#include "ooof.h"
+#include "redirect.h"
 
 void proc_redirects(char **args)
 {

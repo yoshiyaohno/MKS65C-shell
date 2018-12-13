@@ -11,7 +11,7 @@
 #include <sys/types.h>
 
 #include "parse.h"
-#include "ooof.h"
+#include "redirect.h"
 
 // print prompt and read input into buf
 char *prompt_in(char *buf);
