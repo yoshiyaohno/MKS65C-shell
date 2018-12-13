@@ -50,13 +50,16 @@ int main(int argc, char *argv)
         i = -1; // classic technique
         while(cmds[++i]) {
             if(!cmds[i])
-                continue;
+                break;
             pcmds = split_pipes(cmds[i]);
+            if(!pcmds[0])
+                break;
             if(!pcmds[1]) {
                 args = parse_args(pcmds[0]);
+                if(!args[0]) break;
                 status = run_cmd(args);
                 free(args);
-                continue;
+                break;
             }
             else
                 status = run_pipes(pcmds);

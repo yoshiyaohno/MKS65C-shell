@@ -32,13 +32,17 @@ char **_split(char *line, char *delims)
 char **split_cmds(char *cmds)
 {
     // printf("[split_cmds] ");
-    return _split(cmds, ";");
+    char **xs = _split(cmds, ";");
+    trim_spaces(xs);
+    return xs;
 }
 
 // split a string on pipe characters, i.e. separate pipeees
 char **split_pipes(char *cmds)
 {
-    return _split(cmds, "|");
+    char **xs = _split(cmds, "|");
+    trim_spaces(xs);
+    return xs;
 }
 
 // counts the tokens in a string (= single command)
