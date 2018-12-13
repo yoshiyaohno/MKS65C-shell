@@ -34,6 +34,7 @@ char *clock_time()
     return ttt[3];
 }
 
+// Runs the shell, until exited or interrupted
 int main(int argc, char *argv)
 {
     char line[MAX_LINE];

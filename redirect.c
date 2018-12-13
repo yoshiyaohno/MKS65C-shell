@@ -137,7 +137,7 @@ int run_pipes(char **cmds)
     return status;
 }
 
-// run a command (now with redirection), and return its status
+// run a command (with redirection but not piping), and return its status
 int run_cmd(char **args)
 {
     int child, status;

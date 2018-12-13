@@ -18,3 +18,6 @@ char *prompt_in(char *buf);
 
 // returns a string with the HH:MM:SS time
 char *clock_time(void);
+
+// Runs the shell, until exited or interrupted
+int main(int argc, char *argv);
