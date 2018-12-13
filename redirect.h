@@ -9,10 +9,15 @@
 // deals with all redirection, and runs the command in @args
 int ooof(char **args);
 
+// process all redirects in an argument string; alters the file table
+//   and does not change it back!
 void proc_redirects(char **args);
 
-void child_cmd(char **args);
+// change directories, including error checking and ~ (i.e. cd)
+void change_dir(char **args);
 
+// handles all piping and redirects to execute a single command with
+//   any number of pipes   A T   L E A S T   O N E 
 int run_pipes(char **cmds);
 
 // run a command (without redirection), and return its status

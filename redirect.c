@@ -3,6 +3,8 @@
 #define PIPE_RD 0
 #define PIPE_WR 1
 
+// process all redirects in an argument string; alters the file table
+//   and does not change it back!
 void proc_redirects(char **args)
 {
     int i = 0;
@@ -97,6 +99,8 @@ void change_dir(char **args)
     }
 }
 
+// handles all piping and redirects to execute a single command with
+//   any number of pipes   A T   L E A S T   O N E 
 int run_pipes(char **cmds)
 {
     // maybe this is bad coding but beacuse of how this is used

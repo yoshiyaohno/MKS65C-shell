@@ -16,5 +16,5 @@
 // print prompt and read input into buf
 char *prompt_in(char *buf);
 
-// return a string of the time today
+// returns a string with the HH:MM:SS time
 char *clock_time(void);

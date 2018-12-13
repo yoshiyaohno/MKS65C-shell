@@ -2,6 +2,7 @@
 
 #define MAX_LINE 512
 
+// print the prompt and read input into @buf
 char *prompt_in(char *buf)
 {
     char *cwd_out; // this is a little stupid
@@ -23,6 +24,7 @@ char *prompt_in(char *buf)
     return buf;
 }
 
+// returns a string with the HH:MM:SS time
 char *clock_time()
 {
     // A+++ naming scheme
@@ -46,7 +48,6 @@ int main(int argc, char *argv)
         prompt_in(line);
         cmds = split_cmds(line);
         i = -1; // classic technique
-
         while(cmds[++i]) {
             if(!cmds[i])
                 continue;
@@ -57,15 +58,12 @@ int main(int argc, char *argv)
                 free(args);
                 continue;
             }
-            else {
+            else
                 status = run_pipes(pcmds);
-            }
             free(pcmds);
         }
-
         free(cmds);
     }
-
     free(args);
     return 0;
 }

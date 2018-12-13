@@ -35,6 +35,7 @@ char **split_cmds(char *cmds)
     return _split(cmds, ";");
 }
 
+// split a string on pipe characters, i.e. separate pipeees
 char **split_pipes(char *cmds)
 {
     return _split(cmds, "|");
