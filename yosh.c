@@ -35,10 +35,10 @@ char *clock_time()
 int main(int argc, char *argv)
 {
     char line[MAX_LINE];
-    char **args, **cmds;
+    char **args, **cmds, **pcmds;
     int child;
     int status = 0;
-    int i = 0;
+    int i, j;
 
     while(1) {
         if(isatty(0))
@@ -46,15 +46,21 @@ int main(int argc, char *argv)
         prompt_in(line);
         cmds = split_cmds(line);
         i = -1; // classic technique
+
         while(cmds[++i]) {
-                
-            args = parse_args(cmds[i]);
-              
-            if(!args[0]) continue;
-             
-            status = run_cmd(args);
-            
-            free(args);
+            if(!cmds[i])
+                continue;
+            pcmds = split_pipes(cmds[i]);
+            if(!pcmds[1]) {
+                args = parse_args(pcmds[0]);
+                status = run_cmd(args);
+                free(args);
+                continue;
+            }
+            else {
+                status = run_pipes(pcmds);
+            }
+            free(pcmds);
         }
 
         free(cmds);

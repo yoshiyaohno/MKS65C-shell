@@ -13,6 +13,8 @@ void proc_redirects(char **args);
 
 void child_cmd(char **args);
 
+int run_pipes(char **cmds);
+
 // run a command (without redirection), and return its status
 int run_cmd(char **args);
 

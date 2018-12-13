@@ -1,5 +1,8 @@
 #include "redirect.h"
 
+#define PIPE_RD 0
+#define PIPE_WR 1
+
 void proc_redirects(char **args)
 {
     int i = 0;
@@ -92,6 +95,42 @@ void change_dir(char **args)
         if(chdir(args[1]) == -1)
             perror("cd");
     }
+}
+
+int run_pipes(char **cmds)
+{
+    // maybe this is bad coding but beacuse of how this is used
+    //   in the main shell function I can assume there is at least
+    //   one pipe in the input
+    int i = 0;
+    int child, status;
+    int p[2];
+    int sav_stdin = dup(0);
+    while(cmds[i+1]) {
+        if(pipe(p) == -1)
+            perror("pipe");
+        if(fork() == 0) {
+            char **l_args = parse_args(cmds[i]);
+            if(close(p[PIPE_RD]) == -1)
+                perror("pipe close");
+            if(dup2(p[PIPE_WR], 1) == -1)
+                perror("dup2");
+            run_cmd(l_args);
+            free(l_args);
+            exit(0);
+        }
+        else {
+            if(close(p[PIPE_WR]) == -1)
+                perror("pipe close");
+            if(dup2(p[PIPE_RD], 0) == -1)
+                perror("dup2");
+        }
+        ++i;
+    }
+    char **args = parse_args(cmds[i]);
+    status = run_cmd(args);
+    dup2(sav_stdin, 0);
+    return status;
 }
 
 // run a command (now with redirection), and return its status
