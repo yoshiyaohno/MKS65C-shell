@@ -77,9 +77,6 @@ void trim_spaces(char **args);
 ### redirect.c
 #### functions to handle redirection and command execution
 ```C
-// deals with all redirection, and runs the command in @args
-int ooof(char **args);
-
 // process all redirects in an argument string; alters the file table
 //   and does not change it back!
 void proc_redirects(char **args);
