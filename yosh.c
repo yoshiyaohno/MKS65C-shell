@@ -16,7 +16,8 @@ char *prompt_in(char *buf)
 
     char *t = clock_time();
 
-    printf(" %s \n[%s]$ ", cwd_out, t);
+    if(isatty(0))
+        printf(" %s \n[%s]$ ", cwd_out, t);
     fgets(buf, MAX_LINE, stdin);
     buf[strlen(buf)-1] = '\0';
     return buf;
@@ -40,7 +41,8 @@ int main(int argc, char *argv)
     int i = 0;
 
     while(1) {
-        printf("\n[E%03i]", WEXITSTATUS(status));
+        if(isatty(0))
+            printf("\n[E%03i]", WEXITSTATUS(status));
         prompt_in(line);
         cmds = split_cmds(line);
         i = -1; // classic technique
@@ -50,7 +52,6 @@ int main(int argc, char *argv)
               
             if(!args[0]) continue;
              
-            //status = ooof(args); // o h   y e a h 
             status = run_cmd(args);
             
             free(args);
