@@ -16,7 +16,7 @@ run:
 clean:
 	rm *.o yosh yosh_debug
 
-bug: yosh.c yosh.h parse.c parse.h
+bug: yosh.c yosh.h parse.c parse.h redirect.c redirect.h
 	gcc -c -g yosh.c
 	gcc -c -g parse.c
 	gcc -c -g redirect.c
